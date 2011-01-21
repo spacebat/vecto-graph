@@ -5,4 +5,5 @@
   ((:file "package")
    (:file "share")
    (:file "bar-graph")
-   (:file "pie-chart")))
+   (:file "pie-chart")
+   (:file "plot")))
