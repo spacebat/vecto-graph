@@ -21,6 +21,9 @@
                                  #.(or *compile-file-truename*
                                        *load-truename*))))
 (defvar *font-size* 15)
+(defvar *width* 500)
+(defvar *height* 500)
+(defvar *margins* 10)
 
 (defun total-count (alist)
   (reduce #'+ alist :key #'second))

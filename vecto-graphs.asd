@@ -6,4 +6,5 @@
    (:file "share")
    (:file "bar-graph")
    (:file "pie-chart")
-   (:file "plot")))
+   (:file "axes")
+   (:file "line-chart")))
