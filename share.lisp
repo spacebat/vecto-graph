@@ -41,7 +41,8 @@
         *current-font-size* size))
 
 (defun (setf font-size) (size)
-  (set-font *current-font-size* size))
+  (setf *current-font-size* size)
+  (set-font *current-font* size))
 
 (defun total-count (alist)
   (reduce #'+ alist :key #'second))
