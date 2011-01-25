@@ -3,7 +3,7 @@
 (defvar *axis-font-size* 10)
 
 (defun string-box (string)
-  (string-bounding-box string *axis-font-size* *font*))
+  (string-bounding-box string (font-size) (font)))
 
 (defun max-label-length (step max orientation)
   (loop for i from step by step below max
@@ -16,11 +16,27 @@
                     (- (ymax box)
                        (ymin box))))))
 
-(defun draw-truly-centered-string (x y string)
+(defun draw-aligned-string (x y string &key
+                            (align-x :left)
+                            (align-y :bottom))
   (let* ((bbox (string-box string))
-         (width/2 (/ (- (xmax bbox) (xmin bbox)) 2.0))
-         (height/2 (/ (- (ymax bbox) (ymin bbox)) 2.0)))
-    (draw-centered-string (- x width/2) (- y height/2) string)))
+         (x (- x
+               (ecase align-x
+                 (:left (xmin bbox))
+                 (:right (xmax bbox))
+                 (:center (+ (/ (- (xmax bbox) (xmin bbox)) 2.0)
+                             (xmin bbox))))))
+         (y (- y
+               (ecase align-y
+                 (:top (ymax bbox))
+                 (:bottom (ymin bbox))
+                 (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
+                             (ymin bbox)))))))
+    (draw-string x y string)))
+
+(defun draw-truly-centered-string (x y string)
+  (draw-aligned-string x y string
+                       :align-x :center :align-y :center))
 
 (defun draw-axis-label (axis-length
                         y-margin x-margin
@@ -50,36 +66,43 @@
                     x-label-height y-label-height
                     x-margin y-margin)
   (setf (font-size) *font-size*)
-  (draw-truly-centered-string (+ x-margin (floor x-axis-length 2))
-                              (+ *margins* (ceiling x-label-height 2))
+  (draw-truly-centered-string (+ x-margin (/ x-axis-length 2))
+                              (+ *margins* (/ x-label-height 2))
                               x-label)
   (rotate-degrees 90)
-  (draw-truly-centered-string (+ y-margin (floor y-axis-length 2))
-                              (- (+ *margins* (ceiling y-label-height 2)))
+  (draw-truly-centered-string (+ y-margin (/ y-axis-length 2))
+                              (- (+ *margins* (/ y-label-height 2)))
                               y-label)
   (rotate-degrees -90))
 
 (defun calculate-margins (x-step y-step max-x max-y x-label y-label)
   (let* ((x-box (string-bounding-box x-label *font-size* *font*))
-         (x-height (+ (ceiling (- (ymax x-box) (ymin x-box))) 5))
+         (x-height (- (ymax x-box) (ymin x-box)))
          (y-box (string-bounding-box y-label *font-size* *font*))
-         (y-height (+ (ceiling (- (ymax y-box) (ymin y-box))) 5))
+         (y-height (- (ymax y-box) (ymin y-box)))
          (max-x-label-length (ceiling (max-label-length x-step max-x :x)))
          (max-y-label-length (ceiling (max-label-length y-step max-y :y)))
-         (x-margin (- (+ *margins*
-                         3
-                         y-height
-                         3
-                         max-y-label-length
-                         3)
+         (x-margin (- (ceiling
+                       (+ *margins*
+                          3
+                          y-height
+                          3
+                          max-y-label-length
+                          3))
                       .5))
-         (y-margin (- (+ *margins*
-                         3
-                         x-height
-                         3
-                         max-x-label-length
-                         3)
+         (y-margin (- (ceiling
+                       (+ *margins*
+                          3
+                          x-height
+                          3
+                          max-x-label-length
+                          3))
                       .5)))
+    ;; (draw-line 0 x-height
+    ;;            *width* x-height)
+    ;; (draw-line y-height 0
+    ;;            y-height *height*)
+    ;; (draw-borders)
     (values x-margin y-margin
             x-height y-height
             max-x-label-length
