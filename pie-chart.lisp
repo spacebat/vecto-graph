@@ -16,8 +16,5 @@
 
 (defun pie-chart (file alist)
   "Alist (name value)"
-  (with-canvas (:width 500 :height 500)
-    (set-font *font* *font-size*)
-    (when alist
-      (print-pie alist)
-      (save-png file))))
+  (with-graph (file)
+    (print-pie alist)))

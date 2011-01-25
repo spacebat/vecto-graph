@@ -31,10 +31,7 @@
         maximize (elt (string-bounding-box text *font-size* *font*)
                       2)))
 
-(defun bar-graph (file alist &key (key #'identity))
+(defun bar-graph (file alist)
   "Alist (name value)"
-  (with-canvas (:width 500 :height 500)
-    (set-font *font* *font-size*)
-    (when alist
-      (print-bars alist (print-labels alist) :key key)
-      (save-png file))))
+  (with-graph (file)
+    (print-bars alist (print-labels alist))))

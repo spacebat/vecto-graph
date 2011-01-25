@@ -49,7 +49,7 @@
                     x-axis-length y-axis-length
                     x-label-height y-label-height
                     x-margin y-margin)
-  (set-font *font* *font-size*)
+  (setf (font-size) *font-size*)
   (draw-truly-centered-string (+ x-margin (floor x-axis-length 2))
                               (+ *margins* (ceiling x-label-height 2))
                               x-label)
@@ -99,7 +99,7 @@
                      x-axis-length y-axis-length
                      x-label-height y-label-height
                      x-margin y-margin)
-        (set-font *font* *axis-font-size*)
+        (setf (font-size) *axis-font-size*)
         (move-to x-margin y-margin)
         (line-to x-margin (- *height* *margins*))
         (move-to x-margin y-margin)

@@ -33,9 +33,7 @@
 
 (defun line-chart (file curves &key x-label y-label)
   "Curves is ((name (x-value y-value)*)*)"
-  (with-canvas (:width 500 :height 500)
-    (set-font *font* *font-size*)
+  (with-graph (file)
     (set-line-width 4)
     (set-line-join :round)
-    (draw-line-chart curves x-label y-label)
-    (save-png file)))
+    (draw-line-chart curves x-label y-label)))

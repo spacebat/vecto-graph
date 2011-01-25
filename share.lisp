@@ -25,8 +25,34 @@
 (defvar *height* 500)
 (defvar *margins* 5)
 
+(defvar *current-font* nil)
+(defvar *current-font-size* nil)
+
+(defun font ()
+  (values *current-font*
+          *current-font-size*))
+
+(defun font-size ()
+  *current-font-size*)
+
+(defun (setf font) (font &optional (size *current-font-size*))
+  (set-font font size)
+  (setf *current-font* font
+        *current-font-size* size))
+
+(defun (setf font-size) (size)
+  (set-font *current-font-size* size))
+
 (defun total-count (alist)
   (reduce #'+ alist :key #'second))
 
 (defun max-value (alist)
   (reduce #'max alist :key #'second))
+
+(defmacro with-graph ((file &key width height) &body body)
+  `(let ((*width* (or ,width *width*))
+         (*height* (or ,height *height*)))
+     (with-canvas (:width *width* :height *height*)
+       (setf (font *font-size*) *font*)
+       ,@body
+       (save-png ,file))))
