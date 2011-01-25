@@ -10,17 +10,17 @@
         for box = (string-box (princ-to-string i))
         maximize (ecase orientation
                    (:x
-                    (- (elt box 2)
-                       (elt box 0)))
+                    (- (xmax box)
+                       (xmin box)))
                    (:y
-                    (- (elt box 3)
-                       (elt box 1))))))
+                    (- (ymax box)
+                       (ymin box))))))
 
 (defun draw-truly-centered-string (x y string)
   (let* ((bbox (string-box string))
-         (width/2 (/ (- (elt bbox 2) (elt bbox 0)) 2.0))
-         (height/2 (/ (- (elt bbox 3) (elt bbox 1)) 2.0)))
-    (draw-string (- x width/2) (- y height/2) string)))
+         (width/2 (/ (- (xmax bbox) (xmin bbox)) 2.0))
+         (height/2 (/ (- (ymax bbox) (ymin bbox)) 2.0)))
+    (draw-centered-string (- x width/2) (- y height/2) string)))
 
 (defun draw-axis-label (axis-length
                         y-margin x-margin
@@ -61,9 +61,9 @@
 
 (defun calculate-margins (x-step y-step max-x max-y x-label y-label)
   (let* ((x-box (string-bounding-box x-label *font-size* *font*))
-         (x-height (+ (ceiling (- (elt x-box 3) (elt x-box 1))) 5))
+         (x-height (+ (ceiling (- (ymax x-box) (ymin x-box))) 5))
          (y-box (string-bounding-box y-label *font-size* *font*))
-         (y-height (+ (ceiling (- (elt y-box 3) (elt y-box 1))) 5))
+         (y-height (+ (ceiling (- (ymax y-box) (ymin y-box))) 5))
          (max-x-label-length (ceiling (max-label-length x-step max-x :x)))
          (max-y-label-length (ceiling (max-label-length y-step max-y :y)))
          (x-margin (- (+ *margins*
