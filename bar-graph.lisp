@@ -9,10 +9,10 @@
           for (nil value) in alist
           for bar-length = (/ (* 400 value) max-value)
           do
-          (rectangle row
-                     (+ right-margin 10)
-                     *bar-width*
-                     bar-length)
+          (draw-rectangle (point row
+                                 (+ right-margin 10))
+                          *bar-width*
+                          bar-length)
           (fill-path))))
 
 (defun print-labels (alist)

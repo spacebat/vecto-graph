@@ -4,7 +4,8 @@
   :components
   ((:file "package")
    (:file "share")
+   (:file "drawing")
+   (:file "axes")
    (:file "bar-graph")
    (:file "pie-chart")
-   (:file "axes")
    (:file "line-chart")))
