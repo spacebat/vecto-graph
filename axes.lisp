@@ -1,10 +1,5 @@
 (in-package :vecto-graphs)
 
-(defvar *axis-font-size* 10)
-
-(defun string-box (string)
-  (string-bounding-box string (font-size) (font)))
-
 (defun max-label-length (step max orientation)
   (loop for i from step by step below max
         for box = (string-box (princ-to-string i))
@@ -15,28 +10,6 @@
                    (:y
                     (- (ymax box)
                        (ymin box))))))
-
-(defun draw-aligned-string (x y string &key
-                            (align-x :left)
-                            (align-y :bottom))
-  (let* ((bbox (string-box string))
-         (x (- x
-               (ecase align-x
-                 (:left (xmin bbox))
-                 (:right (xmax bbox))
-                 (:center (+ (/ (- (xmax bbox) (xmin bbox)) 2.0)
-                             (xmin bbox))))))
-         (y (- y
-               (ecase align-y
-                 (:top (ymax bbox))
-                 (:bottom (ymin bbox))
-                 (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
-                             (ymin bbox)))))))
-    (draw-string x y string)))
-
-(defun draw-truly-centered-string (x y string)
-  (draw-aligned-string x y string
-                       :align-x :center :align-y :center))
 
 (defun draw-axis-label (axis-length
                         y-margin x-margin
@@ -53,12 +26,12 @@
         do
         (ecase orientation
           (:x
-           (move-to scaled-x y-start)
-           (line-to scaled-x y-end)
+           (draw-line scaled-x y-start
+                    scaled-x y-end)
            (draw-truly-centered-string scaled-x label-center label))
           (:y
-           (move-to y-start scaled-x)
-           (line-to y-end scaled-x)
+           (draw-line y-start scaled-x
+                      y-end scaled-x)
            (draw-truly-centered-string label-center scaled-x label)))))
 
 (defun draw-labels (x-label y-label
@@ -123,10 +96,10 @@
                      x-label-height y-label-height
                      x-margin y-margin)
         (setf (font-size) *axis-font-size*)
-        (move-to x-margin y-margin)
-        (line-to x-margin (- *height* *margins*))
-        (move-to x-margin y-margin)
-        (line-to (- *height* *margins*) y-margin)
+        (draw-line x-margin y-margin
+                   x-margin (- *height* *margins*))
+        (draw-line x-margin y-margin
+                   (- *height* *margins*) y-margin)
         (set-rgb-stroke 0 0 0)
         (set-line-width 1)
         (draw-axis-label x-axis-length y-margin x-margin max-x x-step

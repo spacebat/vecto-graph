@@ -21,6 +21,7 @@
                                  #.(or *compile-file-truename*
                                        *load-truename*))))
 (defvar *font-size* 15)
+(defvar *axis-font-size* 10)
 (defvar *width* 500)
 (defvar *height* 500)
 (defvar *margins* 5)
@@ -57,3 +58,32 @@
        (setf (font *font-size*) *font*)
        ,@body
        (save-png ,file))))
+
+(defun draw-line (from-x from-y to-x to-y)
+  (move-to from-x from-y)
+  (line-to to-x to-y))
+
+(defun string-box (string)
+  (string-bounding-box string (font-size) (font)))
+
+(defun draw-aligned-string (x y string &key
+                            (align-x :left)
+                            (align-y :bottom))
+  (let* ((bbox (string-box string))
+         (x (- x
+               (ecase align-x
+                 (:left (xmin bbox))
+                 (:right (xmax bbox))
+                 (:center (+ (/ (- (xmax bbox) (xmin bbox)) 2.0)
+                             (xmin bbox))))))
+         (y (- y
+               (ecase align-y
+                 (:top (ymax bbox))
+                 (:bottom (ymin bbox))
+                 (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
+                             (ymin bbox)))))))
+    (draw-string x y string)))
+
+(defun draw-truly-centered-string (x y string)
+  (draw-aligned-string x y string
+                       :align-x :center :align-y :center))
