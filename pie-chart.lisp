@@ -1,8 +1,5 @@
 (in-package :vecto-graphs)
 
-(defun quadrant (angle)
-  (ceiling angle (/ pi 2)))
-
 (defun draw-sector-labels (name value
                            center radius
                            start-angle angle)

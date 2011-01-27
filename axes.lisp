@@ -37,13 +37,11 @@
                       *margins*)
                x-label
                :align-x :center)
-  (vecto:rotate-degrees 90)
   (draw-string (point (+ (y origin) (/ y-axis-length 2))
-                      (- *margins*))
+                      *margins*)
                y-label
-               :align-x :center
-               :align-y :top)
-  (vecto:rotate-degrees -90))
+               :rotate :anti-clockwise
+               :align-x :center))
 
 (defun calculate-margins (xs ys x-label y-label)
   (let* ((x-box (string-box x-label))

@@ -27,24 +27,60 @@
 (defun string-box (string)
   (vecto:string-bounding-box string (font-size) (font)))
 
+(defun quadrant (angle)
+  (ceiling angle (/ pi 2)))
+
+(defun rotate-alignment (align-x align-y rotate)
+  (let ((flip-x '(:left :right :right :left :center :center))
+        (flip-y '(:top :bottom :bottom :top :center :center)))
+    (values (case rotate
+              (:clockwise (getf flip-x align-x))
+              (:anti-clockwise align-x)
+              (t align-x))
+            (case rotate
+              (:clockwise align-y)
+              (:anti-clockwise (getf flip-y align-y))
+              (t align-y))
+            (case rotate
+              (:clockwise (- (/ pi 2)))
+              (:anti-clockwise (/ pi 2))
+              (t rotate)))))
+
+(defun rotate-point (point angle)
+  (let ((cos (cos angle))
+        (sin (sin angle))
+        (x (x point))
+        (y (y point)))
+    (point (+ (* x sin) (* y cos))
+           (- (* x cos) (* y sin)))))
+
 (defun draw-string (point string &key
                     (align-x :left)
-                    (align-y :bottom))
-  (let* ((bbox (string-box string))
-         (x (- (x point)
-               (ecase align-x
-                 (:left (xmin bbox))
-                 (:right (xmax bbox))
-                 (:center (+ (/ (- (xmax bbox) (xmin bbox)) 2.0)
-                             (xmin bbox))))))
-         (y (- (y point)
-               (ecase align-y
-                 (:top (ymax bbox))
-                 (:bottom (ymin bbox))
-                 (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
-                             (ymin bbox)))))))
-    (vecto:draw-string x y string)
-    bbox))
+                    (align-y :bottom)
+                    rotate)
+  (multiple-value-bind (align-x align-y angle)
+      (rotate-alignment align-x align-y rotate)
+    (when angle
+      (setf point (rotate-point point angle))
+      (vecto:rotate angle))
+    (let* ((bbox (string-box string))
+           (origin (add point
+                        (- (ecase align-x
+                             (:left (xmin bbox))
+                             (:right (xmax bbox))
+                             (:center (+ (/ (- (xmax bbox) (xmin bbox)) 2.0)
+                                         (xmin bbox)))))
+                        (- (ecase align-y
+                             (:top (ymax bbox))
+                             (:bottom (ymin bbox))
+                             (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
+                                         (ymin bbox))))))))
+     
+      (vecto:draw-string (x origin)
+                         (y origin) string)
+      (when angle
+        (vecto:rotate (- angle)))
+      bbox)))
 
 (defun draw-centered-string (point string)
   (draw-aligned-string point string
@@ -61,7 +97,7 @@
 
 (defun draw-rectangle (origin width height)
   (vecto:rectangle (x origin) (y origin) width height)
-  (vecto:fill-path))
+  (vecto:fill-and-stroke))
 
 (defun translate (point)
   (vecto:translate (x point) (y point)))
