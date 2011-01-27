@@ -37,13 +37,12 @@
   *current-font-size*)
 
 (defun (setf font) (font &optional (size *current-font-size*))
-  (set-font font size)
+  (vecto:set-font font size)
   (setf *current-font* font
         *current-font-size* size))
 
 (defun (setf font-size) (size)
-  (setf *current-font-size* size)
-  (set-font *current-font* size))
+  (setf (font size) *current-font*))
 
 (defun total-count (alist)
   (reduce #'+ alist :key #'second))

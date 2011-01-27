@@ -14,6 +14,10 @@
   (point (x point)
          (+ y (y point))))
 
+(defun add (point x y)
+  (point (+ x (x point))
+         (+ y (y point))))
+
 (defun distance (point-1 point-2)
   (sqrt (+ (expt (- (x point-2) (x point-1)) 2)
            (expt (- (y point-2) (y point-1)) 2))))
@@ -39,7 +43,8 @@
                  (:bottom (ymin bbox))
                  (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
                              (ymin bbox)))))))
-    (vecto:draw-string x y string)))
+    (vecto:draw-string x y string)
+    bbox))
 
 (defun draw-centered-string (point string)
   (draw-aligned-string point string
@@ -60,3 +65,8 @@
 
 (defun translate (point)
   (vecto:translate (x point) (y point)))
+
+(defun arc (center radius start-angle end-angle)
+  (vecto:arc (x center) (y center)
+             radius start-angle end-angle)
+  (vecto:fill-and-stroke))
