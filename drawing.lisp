@@ -106,3 +106,9 @@
   (vecto:arc (x center) (y center)
              radius start-angle end-angle)
   (vecto:fill-and-stroke))
+
+(defun move-to (point)
+  (vecto:move-to (x point) (y point)))
+
+(defun line-to (point)
+  (vecto:line-to (x point) (y point)))

@@ -1,28 +1,34 @@
 (in-package :vecto-graphs)
 
 (defun draw-curve (points)
-  ;; (apply #'move-to (car points))
-  ;; (loop for (x y) in (cdr points)
-  ;;       do (line-to x y))
-  ;; (stroke)
-  )
+  (move-to (car points))
+  (mapcar #'line-to (cdr points))
+  (vecto:stroke))
 
-(defun max-points (curves)
+(defun max-y (curves)
   (loop for (name . curve) in curves
-        maximize (reduce #'max curve :key #'first) into max-x
-        maximize (reduce #'max curve :key #'second) into max-y
-        finally (return (values max-x max-y))))
+        maximize (max-value curve)))
 
-(defun scale-points (points &key width height max-x max-y)
-  (let ((sorted (copy-alist points)))
-    (loop for (x y) in sorted
-          collect (list (/ (* x width) max-x)
-                        (/ (* y height) max-y)))))
+(defun scale-points (curve &key width height max-y)
+  (let ((x-step (/ width (1+ (length curve)))))
+    (loop for (x y) in curve
+          for i from x-step by x-step
+          collect (point i (/ (* y height) max-y)))))
+
+(defun x-labels (curves)
+  (let ((first-labels (mapcar #'car (cdar curves))))
+    (loop for (name . curve) in (cdr curves)
+          for labels = (mapcar #'car curve)
+          do (assert (equalp first-labels labels)
+                     nil "Labels of all curves must be equal"))
+    first-labels))
 
 (defun draw-line-chart (curves x-label y-label)
-  (multiple-value-bind (max-x max-y) (max-points curves)
+  (let ((max-y (max-y curves)))
     (multiple-value-bind (origin x-length y-length)
-        (draw-number-axes max-x max-y 10
+        (draw-number-axes (x-labels curves)
+                          max-y
+                          10
                           x-label y-label)
       (translate origin)
       (loop for (name . curve) in curves
@@ -31,7 +37,7 @@
             (apply #'vecto:set-rgb-stroke color)
             (draw-curve (scale-points curve
                                       :width x-length :height y-length
-                                      :max-x max-x :max-y max-y))))))
+                                      :max-y max-y))))))
 
 (defun line-chart (file curves &key x-label y-label)
   "Curves is ((name (x-value y-value)*)*)"
@@ -39,9 +45,3 @@
     (vecto:set-line-width 4)
     (vecto:set-line-join :round)
     (draw-line-chart curves x-label y-label)))
-
-(defun move-to (point)
-  (vecto:move-to (x point) (y point)))
-
-(defun line-to (point)
-  (vecto:line-to (x point) (y point)))

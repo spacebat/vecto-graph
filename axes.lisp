@@ -10,8 +10,8 @@
                       (:y (y origin)))))
     (loop with step = (if step
                           (* axis-length step)
-                          (floor axis-length (length labels)))
-          for x from (+ axis-start step) by step to axis-length
+                          (floor axis-length (1+ (length labels))))
+          for x from (+ axis-start step) by step
           for label in labels
           do
           (ecase orientation
@@ -105,7 +105,7 @@
     (values origin x-axis-length y-axis-length)))
 
 (defun draw-axes  (xs ys x-label y-label
-                   &key y-step x-step)
+                   &key y-step)
   (multiple-value-bind (origin x-axis-length y-axis-length)
       (draw-axes-lines xs ys x-label y-label)
     (draw-labels x-label y-label
@@ -116,9 +116,9 @@
                      x-axis-length
                      xs
                      :x
-                     x-step)
+                     nil)
     (draw-axis-label origin y-axis-length
-                     xs
+                     ys
                      :y
                      y-step)
     (values origin x-axis-length y-axis-length)))
@@ -138,16 +138,10 @@
   (loop for i from step by step below max
         collect (princ-to-string i)))
 
-(defun draw-number-axes (max-x max-y divisions x-label y-label)
-  (let ((x-step (/ max-x divisions))
-        (y-step (/ max-y divisions)))
-    (draw-axes (labels-from-numbers x-step max-x)
+(defun draw-number-axes (xs max-y divisions x-label y-label)
+  (let ((y-step (/ max-y divisions)))
+    (draw-axes xs
                (labels-from-numbers y-step max-y)
                x-label
                y-label
-               ;; :x-step (/ x-step max-x)
-               ;; :y-step (print (/ y-step max-y))
-               )))
-
-;; (defun draw-label-axes (max-x max-y divisions x-label y-label)
-;;   )
+               :y-step (/ y-step max-y))))
