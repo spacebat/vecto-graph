@@ -139,7 +139,7 @@
         collect (princ-to-string i)))
 
 (defun draw-number-axes (xs max-y divisions x-label y-label)
-  (let ((y-step (/ max-y divisions)))
+  (let ((y-step (float (/ max-y divisions))))
     (draw-axes xs
                (labels-from-numbers y-step max-y)
                x-label
