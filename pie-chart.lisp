@@ -3,7 +3,7 @@
 (defun draw-sector-labels (name value
                            center radius
                            start-angle angle)
-  (vecto:set-rgb-fill 0 0 0)
+  (vecto:set-rgb-fill .0 .0 .0)
   (let* ((half-angle (+ start-angle (/ angle 2.0)))
          (x (cos half-angle))
          (y (sin half-angle))

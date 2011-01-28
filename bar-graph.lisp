@@ -3,16 +3,15 @@
 (defvar *bar-width* 20)
 
 (defun draw-bars (points)
+  (apply #'vecto:set-rgb-stroke (car *colors*))
+  (apply #'vecto:set-rgb-fill (car *colors*))
   (loop for point in points
-        for color in *colors*
         do
-        (apply #'vecto:set-rgb-stroke color)
-        (apply #'vecto:set-rgb-fill color)
-        (draw-rectangle (point (- (x point)
-                                  (/ *bar-width* 2))
+        (draw-rectangle (point (floor (- (x point)
+                                         (floor *bar-width* 2)))
                                1)
                         *bar-width*
-                        (y point))))
+                        (ceiling (y point)))))
 
 (defun draw-bar-graph (alist x-label y-label)
   (let ((max-value (max-value alist)))

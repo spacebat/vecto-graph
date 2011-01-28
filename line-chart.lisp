@@ -10,7 +10,7 @@
         maximize (max-value curve)))
 
 (defun scale-points (curve &key width height max-y)
-  (let ((x-step (/ width (1+ (length curve)))))
+  (let ((x-step (floor width (1+ (length curve)))))
     (loop for (x y) in curve
           for i from x-step by x-step
           collect (point i (/ (* y height) max-y)))))
