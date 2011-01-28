@@ -21,7 +21,8 @@
              (draw-string (point x (- (y origin) 6))
                           label
                           :align-x :center
-                          :align-y :top))
+                          :align-y :top
+                          :rotate :anti-clockwise))
             (:y
              (draw-line* (- (x origin) 2) x
                          (+ (x origin) 2) x)
@@ -37,18 +38,18 @@
                       *margins*)
                x-label
                :align-x :center)
-  (draw-string (point (+ (y origin) (/ y-axis-length 2))
-                      *margins*)
+  (draw-string (point *margins*
+                      (+ (y origin) (/ y-axis-length 2)))
                y-label
                :rotate :anti-clockwise
-               :align-x :center))
+               :align-y :center))
 
 (defun calculate-margins (xs ys x-label y-label)
   (let* ((x-box (string-box x-label))
          (x-height (- (ymax x-box) (ymin x-box)))
          (y-box (string-box y-label))
          (y-height (- (ymax y-box) (ymin y-box)))
-         (max-x-label-length (ceiling (max-label-length xs :y)))
+         (max-x-label-length (ceiling (max-label-length xs :x)))
          (max-y-label-length (ceiling (max-label-length ys :x)))
          (x (- (ceiling
                 (+ *margins*

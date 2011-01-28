@@ -31,15 +31,15 @@
   (ceiling angle (/ pi 2)))
 
 (defun rotate-alignment (align-x align-y rotate)
-  (let ((flip-x '(:left :right :right :left :center :center))
-        (flip-y '(:top :bottom :bottom :top :center :center)))
+  (let ((flip-x '(:left :top :right :bottom :center :center))
+        (flip-y '(:top :right :bottom :left :center :center)))
     (values (case rotate
-              (:clockwise (getf flip-x align-x))
-              (:anti-clockwise align-x)
+              (:clockwise (error "not implemented"))
+              (:anti-clockwise (getf flip-y align-y))
               (t align-x))
             (case rotate
-              (:clockwise align-y)
-              (:anti-clockwise (getf flip-y align-y))
+              (:clockwise (error "not implemented"))
+              (:anti-clockwise (getf flip-x align-x))
               (t align-y))
             (case rotate
               (:clockwise (- (/ pi 2)))
@@ -49,8 +49,8 @@
 (defun rotate-point (point angle)
   (let ((cos (cos angle))
         (sin (sin angle))
-        (x (x point))
-        (y (y point)))
+        (x (y point))
+        (y (x point)))
     (point (+ (* x sin) (* y cos))
            (- (* x cos) (* y sin)))))
 
@@ -75,7 +75,7 @@
                              (:bottom (ymin bbox))
                              (:center (+ (/ (- (ymax bbox) (ymin bbox)) 2.0)
                                          (ymin bbox))))))))
-     
+      
       (vecto:draw-string (x origin)
                          (y origin) string)
       (when angle
