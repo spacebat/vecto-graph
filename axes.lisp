@@ -65,7 +65,6 @@
                    max-x-label-length
                    3))
                .5)))
-    (draw-borders)
     (values (point x y)
             (- *width* x *margins*)
             (- *height* y *margins*))))
@@ -73,8 +72,8 @@
 (defvar *arrow-length* 6)
 
 (defun draw-arrows (origin x-axis-length y-axis-length)
-  (let ((x-axis-y (+ x-axis-length (x origin)))
-        (y-axis-x (+ y-axis-length (y origin)))
+  (let ((x-axis-y (+ y-axis-length (y origin)))
+        (y-axis-x (+ x-axis-length (x origin)))
         (opposite (* (tan (/ pi 5)) *arrow-length*)))
     (draw-line* (x origin)
                 x-axis-y
@@ -85,13 +84,13 @@
                 (- (x origin) opposite)
                 (- x-axis-y *arrow-length*))
     (draw-line* y-axis-x
-               (y origin)
-               (- y-axis-x *arrow-length*)
-               (+ (y origin) opposite))
+                (y origin)
+                (- y-axis-x *arrow-length*)
+                (+ (y origin) opposite))
     (draw-line* y-axis-x
-               (y origin)
-               (- y-axis-x *arrow-length*)
-               (- (y origin) opposite))))
+                (y origin)
+                (- y-axis-x *arrow-length*)
+                (- (y origin) opposite))))
 
 (defun draw-axes-lines (xs ys x-label y-label)
   (multiple-value-bind (origin
@@ -126,7 +125,7 @@
 
 (defun max-label-length (labels orientation)
   (loop for label in labels
-        for box = (string-box (princ-to-string label))
+        for box = (string-box label)
         maximize (ecase orientation
                    (:x
                     (- (xmax box)
@@ -137,10 +136,10 @@
 
 (defun labels-from-numbers (step max)
   (loop for i from step by step below max
-        collect (princ-to-string i)))
+        collect i))
 
 (defun draw-number-axes (xs max-y divisions x-label y-label)
-  (let ((y-step (float (/ max-y divisions))))
+  (let ((y-step (/ max-y divisions)))
     (draw-axes xs
                (labels-from-numbers y-step max-y)
                x-label

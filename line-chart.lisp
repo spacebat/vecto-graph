@@ -42,6 +42,5 @@
 (defun line-chart (file curves &key x-label y-label)
   "Curves is ((name (x-value y-value)*)*)"
   (with-graph (file)
-    (vecto:set-line-width 4)
     (vecto:set-line-join :round)
     (draw-line-chart curves x-label y-label)))

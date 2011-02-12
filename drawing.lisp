@@ -25,7 +25,11 @@
 ;;;
 
 (defun string-box (string)
-  (vecto:string-bounding-box string (font-size) (font)))
+  (typecase string
+    (string
+     (vecto:string-bounding-box string (font-size) (font)))
+    (t
+     (string-box (princ-to-string string)))))
 
 (defun quadrant (angle)
   (ceiling angle (/ pi 2)))
@@ -83,8 +87,8 @@
       bbox)))
 
 (defun draw-centered-string (point string)
-  (draw-aligned-string point string
-                       :align-x :center :align-y :center))
+  (draw-string point string
+               :align-x :center :align-y :center))
 
 (defun draw-line (from to)
   (draw-line* (x from) (y from)

@@ -41,7 +41,7 @@
           (move-to center)
           (apply #'vecto:set-rgb-fill color)
           (arc center radius start-angle end-angle)
-          (draw-sector-labels name (princ-to-string value)
+          (draw-sector-labels name value
                               center radius
                               start-angle (- end-angle start-angle)))))
 
