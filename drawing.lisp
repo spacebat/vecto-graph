@@ -81,7 +81,11 @@
                                          (ymin bbox))))))))
       
       (vecto:draw-string (x origin)
-                         (y origin) string)
+                         (y origin) (typecase string
+				      (string string)
+				      (integer (princ-to-string string))
+				      (number (format nil "~,2f" string))
+				      (t (princ-to-string string))))
       (when angle
         (vecto:rotate (- angle)))
       bbox)))

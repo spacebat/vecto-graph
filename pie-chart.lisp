@@ -30,9 +30,10 @@
                  :align-y align-y)))
 
 (defun print-pie (alist center radius)
-  (let ((total (total-count alist))
-        (sorted (sort (copy-alist alist) #'>
-                      :key #'second)))
+  (let* ((total (total-count alist))
+	 (alist (remove 0 alist :key #'second :test #'equalp))
+	 (sorted (sort (copy-alist alist) #'>
+		       :key #'second)))
     (loop for color in *colors*
           for (name value) in sorted
           for start-angle = 0 then end-angle
@@ -45,7 +46,7 @@
                               center radius
                               start-angle (- end-angle start-angle)))))
 
-(defun pie-chart (file alist)
+(defun pie-chart (file alist &key circle-radius)
   "Alist (name value)"
   (with-graph (file)
-    (print-pie alist (point 250 250) 80)))
+    (print-pie alist (point 250 250) circle-radius)))
