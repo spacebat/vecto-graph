@@ -25,11 +25,7 @@
 ;;;
 
 (defun string-box (string)
-  (typecase string
-    (string
-     (vecto:string-bounding-box string (font-size) (font)))
-    (t
-     (string-box (princ-to-string string)))))
+  (vecto:string-bounding-box (ensure-string string) (font-size) (font)))
 
 (defun quadrant (angle)
   (ceiling angle (/ pi 2)))
@@ -58,6 +54,13 @@
     (point (+ (* x sin) (* y cos))
            (- (* x cos) (* y sin)))))
 
+(defun ensure-string (string)
+  (typecase string
+    (string string)
+    (integer (princ-to-string string))
+    (number (format nil "~,2f" string))
+    (t (princ-to-string string))))
+
 (defun draw-string (point string &key
                     (align-x :left)
                     (align-y :bottom)
@@ -81,11 +84,7 @@
                                          (ymin bbox))))))))
       
       (vecto:draw-string (x origin)
-                         (y origin) (typecase string
-				      (string string)
-				      (integer (princ-to-string string))
-				      (number (format nil "~,2f" string))
-				      (t (princ-to-string string))))
+                         (y origin) (ensure-string string))
       (when angle
         (vecto:rotate (- angle)))
       bbox)))
