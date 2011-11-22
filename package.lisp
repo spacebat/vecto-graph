@@ -3,4 +3,5 @@
   (:use :cl)
   (:export
    #:pie-chart
-   #:bar-graph))
+   #:bar-graph
+   #:line-chart))
