@@ -51,20 +51,18 @@
          (y-height (- (ymax y-box) (ymin y-box)))
          (max-x-label-length (ceiling (max-label-length xs :x)))
          (max-y-label-length (ceiling (max-label-length ys :x)))
-         (x (- (ceiling
-                (+ *margins*
-                   y-height
-                   3
-                   max-y-label-length
-                   3))
-               .5))
-         (y (- (ceiling
-                (+ *margins*
-                   x-height
-                   3
-                   max-x-label-length
-                   3))
-               .5)))
+         (x (thin-line
+             (+ *margins*
+                y-height
+                3
+                max-y-label-length
+                3)))
+         (y (thin-line
+             (+ *margins*
+                x-height
+                3
+                max-x-label-length
+                3))))
     (values (point x y)
             (- *width* x *margins*)
             (- *height* y *margins*))))
@@ -123,9 +121,11 @@
                      y-step)
     (values origin x-axis-length y-axis-length)))
 
-(defun max-label-length (labels orientation)
+(defun max-label-length (labels orientation &key key)
   (loop for label in labels
-        for box = (string-box label)
+        for box = (string-box (if key
+                                  (funcall key label)
+                                  label))
         maximize (ecase orientation
                    (:x
                     (- (xmax box)
@@ -134,12 +134,26 @@
                     (- (ymax box)
                        (ymin box))))))
 
+(defun total-label-length (labels orientation &key key)
+  (loop for label in labels
+        for box = (string-box (if key
+                                  (funcall key label)
+                                  label))
+        sum (ecase orientation
+              (:x
+               (- (xmax box)
+                  (xmin box)))
+              (:y
+               (- (ymax box)
+                  (ymin box))))))
+
 (defun labels-from-numbers (step max)
   (loop for i from step by step below max
         collect i))
 
 (defun draw-number-axes (xs max-y divisions x-label y-label)
   (let ((y-step (/ max-y divisions)))
+    (vecto:set-rgb-stroke 0 0 0)
     (draw-axes xs
                (labels-from-numbers y-step max-y)
                x-label

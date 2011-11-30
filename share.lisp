@@ -50,6 +50,9 @@
 (defun max-value (alist)
   (reduce #'max alist :key #'second))
 
+(defun min-value (alist)
+  (reduce #'min alist :key #'second))
+
 (defmacro with-graph ((file &key width height) &body body)
   `(let ((*width* (or ,width *width*))
          (*height* (or ,height *height*)))
@@ -57,3 +60,6 @@
        (setf (font *font-size*) *font*)
        ,@body
        (vecto:save-png ,file))))
+
+(defun thin-line (x)
+  (- (ceiling x) .5))

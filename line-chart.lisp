@@ -39,8 +39,29 @@
                                       :width x-length :height y-length
                                       :max-y max-y))))))
 
+(defun draw-legend (curves)
+  (setf (font-size) *font-size*)
+  (let* ((width (+ 12 6 (max-label-length curves :x :key #'car)))
+         (x (- *width* width 3)))
+    (loop for (name) in curves
+          for color in *colors*
+          with point = (point (+ 2 x 12)
+                              (- *height* 6))
+          for bbox = (draw-string point name :align-y :top)
+          for line-y = (thin-line
+                        (- (y point)
+                           (/ (ymax bbox) 2)))
+          do
+          (setf point (point (x point)
+                             (- (y point)
+                                (ymax bbox)
+                                4)))
+          (apply #'vecto:set-rgb-stroke color)
+          (draw-line* x line-y (+ x 10) line-y))))
+
 (defun line-chart (file curves &key x-label y-label)
   "Curves is ((name (x-value y-value)*)*)"
   (with-graph (file)
     (vecto:set-line-join :round)
+    (draw-legend curves)
     (draw-line-chart curves x-label y-label)))
