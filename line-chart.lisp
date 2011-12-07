@@ -13,7 +13,9 @@
   (let ((x-step (floor width (1+ (length curve)))))
     (loop for (x y) in curve
           for i from x-step by x-step
-          collect (point i (/ (* y height) max-y)))))
+          collect (point i (if (zerop max-y)
+                               y
+                               (/ (* y height) max-y))))))
 
 (defun x-labels (curves)
   (let ((first-labels (mapcar #'car (cdar curves))))

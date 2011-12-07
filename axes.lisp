@@ -155,7 +155,9 @@
   (let ((y-step (/ max-y divisions)))
     (vecto:set-rgb-stroke 0 0 0)
     (draw-axes xs
-               (labels-from-numbers y-step max-y)
+               (and (plusp max-y)
+                    (labels-from-numbers y-step max-y))
                x-label
                y-label
-               :y-step (/ y-step max-y))))
+               :y-step (and (plusp max-y)
+                            (/ y-step max-y)))))
